@@ -1,7 +1,8 @@
 import decode from 'jwt-decode';
+
 export default class AuthService {
     constructor(domain) {
-        this.domain = domain || 'http://localhost:8080'
+        this.domain = domain || 'http://localhost:5000/admin/auth'
         this.fetch = this.fetch.bind(this)
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -14,7 +15,10 @@ export default class AuthService {
             body: JSON.stringify({
                 username,
                 password
-            })
+
+            }),
+            crossorigin: true,    
+            mode: 'no-cors',       
         }).then(res => {
             this.setToken(res.token)
             return Promise.resolve(res);
@@ -64,7 +68,7 @@ export default class AuthService {
     fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-            'Accept': 'application/json',
+            'Accept': '*/*',
             'Content-Type': 'application/json'
         }
 
@@ -75,6 +79,7 @@ export default class AuthService {
         return fetch(url, {
             headers,
             ...options
+   
         })
             .then(this._checkStatus)
             .then(response => response.json())
